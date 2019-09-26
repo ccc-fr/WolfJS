@@ -1,0 +1,136 @@
+11_09_2019
+Correction de la détection de collision des tirs ennemis
+Ajout du debug mode pour masquer les indications inutiles en temps normal (le FPS reste pour l'instant).
+Modification du niveau qui n'était qu'un duplicata d'un autre.
+
+08_09_2019
+ajout de la gestion des clés dans l'éditeur, ainsi que des portes qui s'ouvrent toutes seules 
+(auto-trigger). Cf lvl_2 pour les examples.
+On peut aussi décider de monter un mur au lieu d'en baisser un via les "up".
+Pour faire bouger plusieurs murs à la fois il suffit de faire plusieurs portes sur le même trigger.
+C'est un peu pénible à placer mais ça marche, cf lvl_9 pour des examples.
+lvl_9 devient un vrai niveau de fin afin plein d'ennemis !
+
+02_09_2019
+Début de gestion des clés. Elles s'affichent dans la barre d'état quand on les ramasse.
+Par contre le côté editeur et le management côté script.js ne sont pas fait.
+(Sélection faite côté éditeur mais problème car ça va dans trigger pour l'instant ce qui n'est
+pas une bonne idée en fait)
+Ajout de la gestion de la récupération des armes sur le terrain.
+Tant que le pompe n'est pas ramassé on ne peut pas l'utiliser.
+
+31_08_2019
+Ajout de la gestion des portes et des triggers (qui sont des portes...)
+on peut changer la texture d'un trigger pour montrer qu'on l'a bien activé.
+correction du son de récupétation des cartouches pour le pompe et ajout des sons
+pour la porte et le switch.
+Problème restant : les ennemis ont l'air de viser super mal, même quand on bouge pas.
+Et ça semble compliqué de récupérer les options au sol.
+TODO : gestion des clés.
+Problème potentiel : les portes ne s'ouvrent que d'un côté=> faire plusieurs portes d'une même porte?
+
+24_08_2019
+Ajout de la gestion taille des armes quand elles sont dessinées à l'écran.
+Ajout de la gestion des objets (les clés ne sont pas gérées), dont la partie editeur.
+Petites corrections dans l'editeur, avec gestion du delete.
+Ajout des sons manquants. 
+
+23_08_2019
+Correction du système d'animation (les variables de timings n'étaient pas correctement décrémentées).
+Changement d'état de la barre d'espace au changement de niveau pour éviter les passages de niveau non voulus.
+
+22_08_2019
+Ajout de l'animation et sprite du shotgun.
+Refactorisation du module d'animation [WIP], toutes les infos sont maintenant
+dans le nouveau fichier json weapon_list.json qui contient aussi les infos sur les
+textures à utiliser.
+Textures qui sont chargées au démarrage comme les autres et plus directement dans le fichier
+(TODO : faire ça pour les murs aussi).
+Création des sprites pour les objets  (soin, munitions, clés...)
+
+18_08_2019
+Les ennemis se tiennent plus éloignés des murs (distance réglable par variable)
+encore un changement dans le chargement des images par getlementbyid pour les ennemis
+et la pour l'instant unique arme.
+Ajout du changement de résolution avec les touches t et y, ça marche plutôt bien !
+
+16_08_2019
+Correction de la détection du joueur par l'ennemi (problème d'arrondi au supérieur ou inférieur en fonction du sens du lancer de rayon).
+Début de gestion des collisions avec les murs (dans l'idéal il faudrait qu'ils s'en tiennent plus éloignés pour ne pas qu'ils passent à moitié au travers).
+A améliorer car ils peuvent facilement se retrouver bloquer.
+
+15_08_2019
+Correction du "trou" entre les murs (pas sûr que ce soit parfait).
+Optimisation des perfs en changeant la manière dont les texture sont récupérées
+(plus de "filter" et plus de "getElementByID" à chaque fois).
+Remplacement des Math.PI/2, *1.5, *2 par des constantes.
+
+14_08_2019
+Changement détection fin de zone.
+Changement chargement niveau plus propre ("évite que ça rame").
+La liste des niveaux est au début du script.
+Correction de quelques niveaux.
+Correction, les personnages avec chemin son tuables maintenant.
+
+11_08_2019
+Ajout de la gestion de fin de niveau dans l'editeur et dans le level.
+à la fin du niveau le niveau suivant est lancé (to do : définir une liste de niveau)
+Bug trouvé : les persos qui ont un chemin prédéfini ne sont pas tuables ! (cf lvl8).
+Faudrait aussi gérer la musique différement parce qu'au changement de niveau ça switche de suite
+
+10_08_2019
+Ajout du son "positionnel"
+gros doute sur l'exactitude du résultat, mais ça semble être presque ça...
+
+04_08_2019
+Ajout de la gestion du son (qui n'est pas très générique...)
+Manque surtout la localisation des sons, qui est possible en webaudio
+mais il faut voir comment transposer notre espace dans celui du renderer audio.
+liste des trucs manquants:
+- Localisation audio
+- Tirs bloqués par les murs
+- ennemis qui ne traversent plus les murs.
+
+03_08_2019
+Ajoute les animations de mort de ennemis (image) et là logique va avec.
+Les tirs des ennemis vont baisser notre barre de vie (attention, si on est dans l'axe mais loin ils ne toucheront pas, ça reste une approximation pas trop mauvaise ceci-dit).
+
+02_08_2019
+limitation du nombre de tirs par secondes
+Ajout de la gestion des tirs du joueurs sur l'energie de l'ennemi.
+
+22_01_2019
+S'arrête de tirer de manière random avant de soit tirer à nouveau soit reprendre la chasse.
+Ajout du sprite du pistolet avec son animation.
+Début de la barre de vie et des fonctions pour la ballistique.
+
+16_01_2019
+Sprite tir corrigé, mais ne fonctionne que de face curieusement (à débugger).
+Semble ne pas tenir compte de si le joueur est visible ou non avant de commencer à tirer.
+Continue à tirer même si le joueur n'est pas visible.
+
+14_01_2019
+En théorie bug de champ de vision corrigé.
+Les ennemis tournent sur eux-mêmes pour nous trouver si on a fait un virage un peu sec
+Algo pour le tir ajouté, mais les sprites ne sont pas dans le bon sens, à corriger.
+
+06_01_2019
+is_there_obstacle corrigée mais reste problème quand seulement un carré de séparation
+sprites ennemis qui tirent ajouté
+Mode "chasing" ajouté, mais bug de détection du champ de vision à corriger (+/-90° marche pas bien).
+
+24_12_2018
+dessin du pistolet ajouté
+fonction is_there_obstacle faite mais à checker
+
+25_11_2018
+Correction des bugs graphiques qui faisaient des trous dans les murs
+(il n'y a plus de cas qui génére des erreurs apparemment, reste le problème de perspective)
+
+11_11_2018
+Ajout du déplacement des ennemis
+
+05_11_2018
+Affichage des ennemis
+
+avant: je ne sais plus....

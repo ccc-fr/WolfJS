@@ -1,0 +1,128 @@
+{
+  "weapons":
+  [
+    {
+      "value": 1,
+      "id": "pistol",
+      "name": "pistol",
+      "file": "pistol.png",
+      "sound": "player_gun",
+      "damage": 50,
+      "default_ammo":18,
+      "ammo_mag":9,
+      "delay_between_shot": 200,
+      "damage_type": "straight",
+      "animation_length": 400,
+      "zoom":2,
+      "rest_position":
+      {
+        "shift_x": 0,
+        "shift_y": -103
+      },
+      "animation":
+      [
+        { 
+          "shift_x": 64,
+          "shift_y": -115, 
+          "shift_y_type": "time_relative",
+          "length": 100
+        },
+        {
+          "shift_x": 64,
+          "shift_y": -103, 
+          "shift_y_type": "time_relative",
+          "length": 150
+        },
+        {
+          "shift_x": 0,
+          "shift_y": -80, 
+          "shift_y_type": "time_relative",
+          "length": 50
+        },
+        {
+          "shift_x": 0,
+          "shift_y": -103, 
+          "shift_y_type": "time_relative",
+          "length": 100
+        }
+      ]
+    },
+    {
+      "value": 2,
+      "id": "shotgun",
+      "name": "shotgun",
+      "file": "shotgun.png",
+      "sound": "player_shotgun",
+      "default_ammo":8,
+      "ammo_mag":4,
+      "damage": 100,
+      "delay_between_shot": 200,
+      "damage_type": "straight",
+      "animation_length": 1000,
+      "zoom":3,
+      "rest_position":
+      {
+        "shift_x": 0,
+        "shift_y": -180
+      },
+      "animation":
+      [
+        { 
+          "shift_x": 64,
+          "shift_y": -192, 
+          "shift_y_type": "time_relative",
+          "length": 100
+        },
+        {
+          "shift_x": 64,
+          "shift_y": -150, 
+          "shift_y_type": "time_relative",
+          "length": 150
+        },
+        {
+          "shift_x": 0,
+          "shift_y": -180, 
+          "shift_y_type": "time_relative",
+          "length": 50
+        },
+        {
+          "shift_x": 0,
+          "shift_y": -180,
+          "shift_y_type": "time_relative",
+          "length": 100
+        },
+        {
+          "shift_x": 128,
+          "shift_y": -192, 
+          "shift_y_type": "absolute",
+          "length": 125
+        },
+        {
+          "shift_x": 192,
+          "shift_y": -192,
+          "shift_y_type": "absolute",
+          "length": 125
+        },
+        {
+          "shift_x": 256,
+          "shift_y": -192, 
+          "shift_y_type": "absolute",
+          "length": 125
+        },
+        {
+          "shift_x": 320,
+          "shift_y": -192, 
+          "shift_y_type": "absolute",
+          "length": 125
+        },
+        {
+          "shift_x": 384,
+          "shift_y": -192, 
+          "shift_y_type": "absolute",
+          "length": 125
+        }
+      ]
+    }
+  ],
+  "weapons_textures_path": "data/sprites/"
+}

@@ -1,0 +1,64 @@
+{ "objects":
+  [{
+    "value" : 1,
+    "id":"blue_token",
+    "name": "blue token",
+    "file":"blue_token.png",
+    "key_index": 0,
+    "type": "key"
+  },
+  {
+    "value" : 2,
+    "id":"yellow_pass",
+    "name": "yellow pass",
+    "file":"yellow_pass.png",
+    "key_index": 1,
+    "type": "key"
+  },
+  {
+    "value" : 3,
+    "id":"red_key",
+    "name": "red key",
+    "file":"red_key.png",
+    "key_index": 2,
+    "type": "key"
+  },
+  {
+    "value" : 4,
+    "id":"clip",
+    "name": "clip",
+    "file":"clip.png",
+    "type": "ammo",
+    "ammo_type" : 0,
+    "qty": 9
+  },
+    {
+    "value" : 5,
+    "id":"cartridges",
+    "name": "cartridges",
+    "file":"cartridges.png",
+    "type": "ammo",
+    "ammo_type" : 1,
+    "qty": 4
+  },
+  {
+    "value" : 6,
+    "id":"d_cider",
+    "name": "d cider",
+    "file":"d_cider.png",
+    "type": "health",
+    "qty": 15
+  },
+   {
+    "value" : 7,
+    "id":"shotgun_item",
+    "name": "shotgun_item",
+    "file":"shotgun_item.png",
+    "type": "weapon",
+    "ammo_type" : 1,
+    "weapon_index" : 2,
+    "qty": 4
+  }
+  ],
+  "objects_path" : "data/sprites/"
+}

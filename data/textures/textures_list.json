@@ -1,0 +1,63 @@
+{
+  "textures" : 
+  [{ "value" : 1,
+    "id": "door",
+    "name" : "door",
+    "url" : "door.png"
+  },
+   { "value" : 2,
+    "id": "concrete",
+    "name" : "concrete",
+    "url" : "concrete.png"
+  },
+  {
+    "value" : 3,
+    "id": "prison",
+    "name" : "prison",
+    "url" : "prison.png"
+  },
+  {
+    "value" : 4,
+    "id": "wall",
+    "name" : "mur de pierre",
+    "url" : "stone_wall.png"
+  },
+  {
+    "value" : 5,
+    "id": "wood",
+    "name" : "bois",
+    "url" : "wood.png"
+  },
+  {
+    "value" : 6,
+    "id": "exit",
+    "name" : "sortie",
+    "url" : "exit.png"
+  },
+  {
+    "value" : 7,
+    "id": "portrait",
+    "name" : "portrait",
+    "url" : "portrait.png"
+  },
+  {
+    "value" : 8,
+    "id": "portal",
+    "name" : "portail",
+    "url" : "portal.png"
+  },
+  {
+    "value" : 9,
+    "id": "trigger_off",
+    "name" : "trigger_off",
+    "url" : "trigger_off.png"
+  },
+  {
+    "value" : 10,
+    "id": "trigger_on",
+    "name" : "trigger_on",
+    "url" : "trigger_on.png"
+  }
+  ],
+  "textures_path" : "data/textures"
+}

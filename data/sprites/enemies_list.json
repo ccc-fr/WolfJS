@@ -1,0 +1,46 @@
+{ "enemies":
+  [{
+    "value" : 1,
+    "id":"enemy_black",
+    "name": "black",
+    "file":"ennemi_1.png",
+    "picture_height": 64,
+    "picture_width":64,
+    "t": {"start":0, "length":4},
+    "front_walk": {"start":4, "length":4},
+    "left_walk": {"start":8, "length":4},
+    "back_walk": {"start":12, "length":4},
+    "right_walk": {"start":16, "length":4},
+    "path-finding": [[-5,0],[0,-2],[5,0],[0,2]]
+  },
+  {
+    "value": 2,
+    "id":"enemy_red",
+    "name": "red",
+    "file":"ennemi_1_red.png",
+    "picture_height": 64,
+    "picture_width":64,
+    "t": {"start":0, "length":4},
+    "front_walk": {"start":4, "length":4},
+    "left_walk": {"start":8, "length":4},
+    "back_walk": {"start":12, "length":4},
+    "right_walk": {"start":16, "length":4},
+    "path-finding": [[-5,-5],[5,-5],[5,5],[-5,5]]
+  },
+  {
+    "value": 3,
+    "id":"enemy_blue",
+    "name": "blue",
+    "file":"ennemi_1_blue.png",
+    "picture_height": 64,
+    "picture_width":64,
+    "t": {"start":0, "length":4},
+    "front_walk": {"start":4, "length":4},
+    "left_walk": {"start":8, "length":4},
+    "back_walk": {"start":12, "length":4},
+    "right_walk": {"start":16, "length":4},
+    "path-finding": [[-5,1],[-5,-2],[1,5],[1,-2]]
+  }
+  ],
+  "enemies_path" : "data/sprites/"
+}

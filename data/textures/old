@@ -1,0 +1,43 @@
+{"textures" : [
+  {"id" : 1,
+    "name" : "door",
+    "url" : "door.png"
+  },
+  {
+    "id" : 2,
+    "name" : "béton",
+    "url" : "concrete.png"
+  },
+  {
+    "id":3,
+    "name" : "portail",
+    "url" : "portal.png"
+  },
+  {
+    "id" : 4,
+    "name" : "prison",
+    "url" : "prison.png"
+  },
+  {
+    "id" : 5,
+    "name" : "mur de pierre",
+    "url" : "stone_wall.png"
+  },
+  {
+    "id" : 6,
+    "name" : "bois",
+    "url" : "wood.png"
+  },
+  {
+    "id" : 7,
+    "name" : "sortie",
+    "url" : "exit.png"
+  },
+  {
+    "id" : 8,
+    "name" : "portrait",
+    "url" : "portrait.png"
+  }
+  ],
+  textures_path : "data/textures"
+}

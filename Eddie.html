@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="scripts/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<img id="wall" width="64" height="64"
+src="data/textures/stone_wall.png" alt="The Scream" style="display: none;">
+<img id="concrete" width="64" height="64"
+src="data/textures/concrete.png" alt="The Scream" style="display: none;">
+<img id="door" width="64" height="64"
+src="data/textures/door.png" alt="The Scream" style="display: none;">
+<img id="exit" width="64" height="64"
+src="data/textures/exit.png" alt="The Scream" style="display: none;">
+<img id="wood" width="64" height="64"
+src="data/textures/wood.png" alt="The Scream" style="display: none;">
+<img id="prison" width="64" height="64"
+src="data/textures/prison.png" alt="The Scream" style="display: none;">
+<img id="portal" width="64" height="64"
+src="data/textures/portal.png" alt="The Scream" style="display: none;">
+<img id="portrait" width="64" height="64"
+src="data/textures/portrait.png" alt="The Scream" style="display: none;">
+<img id="trigger_off" width="64" height="64"
+src="data/textures/trigger_off.png" alt="The Scream" style="display: none;">
+<img id="trigger_on" width="64" height="64"
+src="data/textures/trigger_on.png" alt="The Scream" style="display: none;">
+
+<div style="float:left;" id="map">
+  <!-- comme point de départ notre map fait 64*64 max, 768 = 64*12, semble une bonne taille-->
+  <canvas id="MapCanvas" width="768" height="768"
+  style="border:1px solid #ff0000;">
+  Your browser does not support the canvas element.
+  </canvas>
+</div>
+<div style="float:right; display: contents;" id="toolbox">
+  <div>
+    <button id="btn_select_mode" onclick="select_mode();">Select</button>
+    <button id="btn_erase_mode" onclick="erase_mode();">Erase</button>
+    <button id="btn_wall_mode" onclick="wall_mode();">Wall Mode</button>
+    <button id="btn_enemy_mode" onclick="enemy_mode();">Enemy Mode</button>
+    <button id="btn_enemy_mode" onclick="object_mode();">Object Mode</button>
+  </div>
+  <div>
+    <button id="load_example" onclick="load_example();">Load example</button>
+    <button id="export_level" onclick="export_level();">Export Level</button>
+    <button id="import_level" onclick="import_level_from_txt_area();">Import Level from textarea</button>
+    <button id="set_starting_point" onclick="next_is_start();">Set starting point</button>
+    <button id="set_ending_point" onclick="next_is_end();">Set ending point</button>
+  </div>
+</div>
+<br><hr>
+<div style="display: contents; font-size:10v;">
+  Next is start:<input id="disp_b_next_is_start" type="checkbox" disabled>
+  Next is end:<input id="disp_b_next_is_end" type="checkbox" disabled>
+  Next is enemy:<input id="disp_b_next_is_enemy" type="checkbox" disabled>
+  <br>Next is object:<input id="disp_b_next_is_object" type="checkbox" disabled>
+  Next is Door:<input id="disp_b_next_is_door" type="checkbox" disabled>
+  Next is Door Position:<input id="disp_b_next_is_door_opening" type="checkbox" disabled>
+  Next is Door texture Position:<input id="disp_b_next_is_door_trigger_tex_position" type="checkbox" disabled>
+  Select Mode:<input id="disp_b_select_mode" type="checkbox" disabled>
+  <br>Erase Mode:<input id="disp_b_erase_mode" type="checkbox" disabled>
+  Wall Mode:<input id="disp_b_wall_mode" type="checkbox" disabled>
+  Enemy Mode:<input id="disp_b_enemy_mode" type="checkbox" disabled>
+  Enemy Path Mode:<input id="disp_b_enemy_path_mode" type="checkbox" disabled>
+  <br>Object Mode:<input id="disp_b_object_mode" type="checkbox" disabled>
+</div>
+  <br><hr>
+<div style="display: contents;">
+  POV:<input type="text" name="pov" id="input_pov"><br>
+  ROT:<input type="text" name="rotation" id="input_rotation"><br>
+  HauteurW:<input type="text" name="HMur" id="input_constanteHWall"><br>
+</div>
+
+<br>
+  <hr>Walls:
+<table>
+  <tr><td></td><td><select id="select_up"></select></td><td><button id="btn_copy_tx" onclick="copy_texture();">copy</button></td></tr>
+  <tr><td><select id="select_left"></select></td><td>
+    <div style="float:left;" id="map">
+      <canvas id="preview_tex_canvas" width="64" height="64"
+      style="border:1px solid #000000;">
+      Your browser does not support the canvas element.
+      </canvas>
+    </div>
+    </td><td><select id="select_right"></select></td></tr>
+  <tr><td></td><td><select id="select_down" style="float:none;"></select></td><td></td></tr>
+</table>
+  <div><div>Valeur texture:</div><div id="current_texture_value_disp"></div></div>
+  <hr>
+  <div>Enemies:
+    <select id="select_enemy"></select>
+    <canvas id="preview_enemy_canvas" width="64" height="64" style="border:1px solid #0000FF;">Your browser does not support the canvas element.
+    </canvas>
+    Enemy ROT:<input type="text" name="rotation_enemy" id="input_enemy_rotation" value=0.1><br>
+      <div><div>Enemy selected:</div><div id="current_enemy_pos_disp"></div></div>
+      <button id="set_enemy_position" onclick="next_is_enemy();">Set enemy position</button>
+      <button id="set_enemy_path" onclick="next_is_enemy_path();">Set enemy path</button>
+    <div>
+      <button id="left_arrow" onclick="change_arrow_direction(event);">&#11120;</button>
+      <button id="up_arrow" onclick="change_arrow_direction(event);">&#11121;</button>
+      <button id="right_arrow" onclick="change_arrow_direction(event);">&#11122;</button>
+      <button id="down_arrow" onclick="change_arrow_direction(event);">&#11123;</button>
+      <button id="up_left_arrow" onclick="change_arrow_direction(event);">&#11126;</button>
+      <button id="up_right_arrow" onclick="change_arrow_direction(event);">&#11127;</button>
+      <button id="down_right_arrow" onclick="change_arrow_direction(event);">&#11128;</button>
+      <button id="down_left_arrow" onclick="change_arrow_direction(event);">&#11129;</button>
+      <div><div>Direction selected:</div><div id="current_selected_direction"></div></div>
+    </div>
+  </div>
+  <hr>
+  <div>Objects:
+    <select id="select_object"></select>
+    <canvas id="preview_object_canvas" width="64" height="64" style="border:1px solid #0000FF;">Your browser does not support the canvas element.
+    </canvas>
+  </div>
+  <hr>Doors:
+  <div>
+    <button id="set_door_position" onclick="next_is_door();">Set door position</button>
+    <div>Door position:</div><div id="current_door_pos_disp"></div>
+    
+    <button id="set_door_opening_position" onclick="next_is_door_opening();">Set door/interrupt opening</button>
+    <div>Door opening position:</div><div id="current_door_opening_pos_disp"></div>
+    
+    <button id="set_door_trigger_position" onclick="next_is_door_trigger();">set door trigger texture position</button>
+    <div>Valeur trigger:</div><div id="current_door_trigger_pos"></div>
+    
+    <button id="set_door_trigger_texture" onclick="push_texture_to_trigger();">set trigger texture</button>
+    <div>Valeur texture:</div><div id="current_door_texture_text_value_disp"></div>
+    Type of door: <select id="select_door_type">
+      <option value="-2" default>default</option>
+      <option value="-1">auto-trigger</option>
+      <option value="0">blue key</option>
+      <option value="1">yellow key</option>
+      <option value="2">red key</option>
+      <option value="3">auto-trigger-up</option>
+      <option value="4">blue key up</option>
+      <option value="5">yellow key up</option>
+      <option value="6">red key up</option>
+    </select><br>
+    
+    <button id="set_door_wall_trigger_texture" onclick="push_texture_to_wall_triggered();">set wall-triggered  texture</button>
+    <div>Valeur wall texture:</div><div id="current_door_wall_texture_text_value_disp"></div>
+    
+    <button id="prev_door" onclick="dec_current_door();">Prev door</button>
+    <div>current door:</div><div id="current_door_index">  </div>
+    <button id="next_door" onclick="inc_current_door();">Next door</button>
+  </div>
+  <hr>
+<textarea id="generated_level_data"></textarea>
+<script type="text/javascript" src="scripts/editor.js"></script>
+</body>
+</html>
