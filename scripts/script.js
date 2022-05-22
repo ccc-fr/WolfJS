@@ -35,13 +35,19 @@ var right_pressed = 0;
 var altgr_pressed = 0;
 var space_bar_pressed = false;
 
-// Unité de mouvement Haut/bas
-var move_UpDown_unity = 0.121;
+// Unité de mouvement Haut/bas, le _sa est la version ajustée pour suivre la vitesse de rafraichissement du jeu.
+// car requestAnimationFrame tourne à la vitesse de refresh du display (60Hz, 120Hz, 144Hz etc)
+// donc si on ajuste pas on va allez trop vite ou trop lentement.
+// les constantes indiquent la vitesse pour 60Hz, pour ajuster on fait simplement constanteUnity * (60/FPS) 
+const move_UpDown_unity = 0.121;
+var move_UpDown_unity_sa;
 // Unité de mouvement gauche/droite
-//var move_LeftRight_unity = 0.085;
-var move_LeftRight_unity = 0.045;
+const move_LeftRight_unity = 0.045;
+var move_LeftRight_unity_sa;
 // Unité de mouvement Haut/bas des enemis
-var move_UpDown_unity_enemy = 0.033;
+const move_UpDown_unity_enemy = 0.033;
+var move_UpDown_unity_enemy_sa;
+var fps = 60;
 //distance max de l'ennemi par rapport à un mur
 //le but est d'éviter que visuellement il donne l'impression
 //de les traverser
@@ -202,6 +208,9 @@ function step(timestamp)
 //  if (rotation < 0)
 //    rotation = rotation+ 2*Math.PI;
 //  console.log("Nouvelle rotation:"+rotation);
+
+  //ajustement de la vitesses du  jeu en fonction des FPS
+  ajustGameSpeed();
   
  //On regarde quelle touche est appuyée
   checkButtonPress();
@@ -238,10 +247,10 @@ function step(timestamp)
 
 function printFPS()
 {
-  var maintenant = Date.now();
+  //var maintenant = Date.now();
   ctx.font = "20px Arial";
   ctx.fillStyle ="white"; 
-  ctx.fillText(Math.round((1/(maintenant - time_of_last_image)) * 1000), 10, 20);
+  ctx.fillText(fps, 10, 20);
   if (debug_mode)
     ctx.fillText("rot:"+(Math.round((rotation/3.14)*180)), 10, 40);
   ctx_bdv.fillStyle="white";
@@ -255,7 +264,7 @@ function printFPS()
     if (available_keys[i])
       ctx_bdv.drawImage(object_tex_list[objects_data.objects[i].id],0,40,64,24,10+i*20,50,40,20);
   }
-  time_of_last_image = maintenant;
+  //time_of_last_image = maintenant;
 }
 
 function loadLevel(lvl_path)
@@ -454,8 +463,8 @@ function checkButtonPress()
     // L'hypothénuse fait donc 0.111, move_UpDown_unity
     if (rotation >=0 && rotation < PI_0_5)
     {
-      var new_posx = posx + get_cos(rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -466,8 +475,8 @@ function checkButtonPress()
     else if (rotation >= PI_0_5 && rotation < Math.PI)
     {
       var tmp_rotation = Math.PI - rotation; 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -478,8 +487,8 @@ function checkButtonPress()
     else if (rotation >= Math.PI && rotation < PI_1_5)
     {
       var tmp_rotation = rotation - Math.PI; 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -490,8 +499,8 @@ function checkButtonPress()
     else
     {
       var tmp_rotation =  PI_2 - rotation; 
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -508,8 +517,8 @@ function checkButtonPress()
     {
       //equivalent à aller en bas à gauche
       var tmp_rotation = rotation;
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -521,8 +530,8 @@ function checkButtonPress()
     {
       //equivalent à aller en bas à droite
       var tmp_rotation = PI_2-(Math.PI + rotation); 
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -534,8 +543,8 @@ function checkButtonPress()
     {
       //equivalent à aller en haut à droite
       var tmp_rotation =  rotation - Math.PI; 
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -547,8 +556,8 @@ function checkButtonPress()
     {
       //equivalent à aller en haut à gauche
       var tmp_rotation =  Math.PI-(rotation - Math.PI); 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -561,7 +570,7 @@ function checkButtonPress()
   if (left_pressed && !right_pressed && !altgr_pressed)
   {
     //On tourne automatiquement
-    rotation = (rotation + move_LeftRight_unity);
+    rotation = (rotation + move_LeftRight_unity_sa);
     if (rotation > PI_2)
       rotation = rotation%(PI_2);
     if (rotation < 0)
@@ -570,7 +579,7 @@ function checkButtonPress()
   }
   if (right_pressed && !left_pressed && !altgr_pressed)
   {
-    rotation = (rotation - move_LeftRight_unity);
+    rotation = (rotation - move_LeftRight_unity_sa);
     if (rotation > PI_2)
       rotation = rotation%(PI_2);
     if (rotation < 0)
@@ -586,8 +595,8 @@ function checkButtonPress()
     {
       //aller en haut à gauche
       var tmp_rotation = Math.PI - (rotation + PI_0_5);
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -599,8 +608,8 @@ function checkButtonPress()
     {     
       //aller en bas à gauche
       var tmp_rotation =  (rotation - PI_0_5); 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -612,8 +621,8 @@ function checkButtonPress()
     { 
       //aller en bas à droite
       var tmp_rotation =  PI_1_5 - (rotation);
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -625,8 +634,8 @@ function checkButtonPress()
     {
       //aller en haut à gauche
       var tmp_rotation =  rotation - PI_1_5 ;  
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -644,8 +653,8 @@ function checkButtonPress()
     if (rotation >=0 && rotation < PI_0_5)
     {
       var tmp_rotation = PI_0_5 - (rotation);
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -656,8 +665,8 @@ function checkButtonPress()
     else if (rotation >= PI_0_5 && rotation < Math.PI)
     {
       var tmp_rotation = (rotation - PI_0_5); 
-      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx + get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -668,8 +677,8 @@ function checkButtonPress()
     else if (rotation >= Math.PI && rotation < PI_1_5)
     {
       var tmp_rotation = PI_1_5 - rotation; 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy - get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -680,8 +689,8 @@ function checkButtonPress()
     else
     {
       var tmp_rotation =  rotation - PI_1_5; 
-      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity;
-      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity;
+      var new_posx = posx - get_cos(tmp_rotation) * move_UpDown_unity_sa;
+      var new_posy = posy + get_sin(tmp_rotation) * move_UpDown_unity_sa;
       //Detection collision, pour l'instant on ne bouge pas si on cogne
       if (walls[Math.floor(new_posx)][Math.floor(new_posy)] == 0)
       {       
@@ -2289,13 +2298,13 @@ function doLogic()
       }
       //On test si on a atteint la target, si oui on va à next_target, sinon on avance.
       //Note système bancal car on prend pas en compte les flèches !
-      if ( Math.abs(lvl.enemies[i].position.x - lvl.enemies[i].path_target.position.x) >= move_UpDown_unity_enemy )
+      if ( Math.abs(lvl.enemies[i].position.x - lvl.enemies[i].path_target.position.x) >= move_UpDown_unity_enemy_sa )
       {
         //has_moved = true;
         if (Math.abs(lvl.enemies[i].position.x < lvl.enemies[i].path_target.position.x))
         {
           //il ne faut pas traverser les murs !
-          var new_enemy_x = lvl.enemies[i].position.x + move_UpDown_unity_enemy;
+          var new_enemy_x = lvl.enemies[i].position.x + move_UpDown_unity_enemy_sa;
           var new_enemy_x_wall_distance = new_enemy_x + max_enemy_wall_distance;
           if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
           {
@@ -2307,7 +2316,7 @@ function doLogic()
         else
         {
           //il ne faut pas traverser les murs !
-          var new_enemy_x = lvl.enemies[i].position.x - move_UpDown_unity_enemy;
+          var new_enemy_x = lvl.enemies[i].position.x - move_UpDown_unity_enemy_sa;
           var new_enemy_x_wall_distance = new_enemy_x - max_enemy_wall_distance;
           if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
           {
@@ -2317,13 +2326,13 @@ function doLogic()
           }
         }
       }
-      if ( Math.abs(lvl.enemies[i].position.y - lvl.enemies[i].path_target.position.y) >= move_UpDown_unity_enemy )
+      if ( Math.abs(lvl.enemies[i].position.y - lvl.enemies[i].path_target.position.y) >= move_UpDown_unity_enemy_sa )
       {
       
         if (Math.abs(lvl.enemies[i].position.y < lvl.enemies[i].path_target.position.y))
         {
           //il ne faut pas traverser les murs !
-          var new_enemy_y = lvl.enemies[i].position.y + move_UpDown_unity_enemy;
+          var new_enemy_y = lvl.enemies[i].position.y + move_UpDown_unity_enemy_sa;
           var new_enemy_y_wall_distance = new_enemy_y + max_enemy_wall_distance;
           if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0) 
           {
@@ -2335,7 +2344,7 @@ function doLogic()
         else
         {
           //il ne faut pas traverser les murs !
-          var new_enemy_y = lvl.enemies[i].position.y - move_UpDown_unity_enemy;
+          var new_enemy_y = lvl.enemies[i].position.y - move_UpDown_unity_enemy_sa;
           var new_enemy_y_wall_distance = new_enemy_y - max_enemy_wall_distance;
           if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0) 
           {
@@ -3251,4 +3260,15 @@ function build_weapon_textures_list(textures_data, tex_list)
     tex_list[textures_data.weapons[i].value] = document.getElementById(textures_data.weapons[i].id);
   }
   console.log("weapons list built");
+}
+
+function ajustGameSpeed()
+{
+  //compute the new fps
+  var maintenant = Date.now();
+  fps = Math.round((1/(maintenant - time_of_last_image)) * 1000);
+  move_UpDown_unity_sa = move_UpDown_unity * (60/fps);
+  move_LeftRight_unity_sa = move_LeftRight_unity * (60/fps);
+  move_UpDown_unity_enemy_sa = move_UpDown_unity_enemy * (60/fps);
+  time_of_last_image = maintenant;
 }
