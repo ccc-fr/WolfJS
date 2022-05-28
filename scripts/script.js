@@ -60,6 +60,8 @@ const checkboard_size = 64;
 // distance minimale de détection des ennemis
 const enemy_sight_distance = 20;
 const enemy_sight_angle = Math.PI;
+// distance minimale entre le joueur et l'ennemi
+const min_enemy_player_distance = 2;
 //la vie du joueur
 var life = 100;
 var player_fire = false;
@@ -2259,7 +2261,8 @@ function doLogic()
     //Pour chaque ennemi on vérifie s'il voit le joueur ou pas, si oui passe en mode "chasing"
     //trois critères : le joueur est-il à moins de "enemy_sight_distance" de l'ennemi ? 
     //Et est-il dans son angle de vue enemy_sight_angle ? y'a t'il un obstacle ?
-    var is_at_distance = get_distance(lvl.enemies[i].position.x, lvl.enemies[i].position.y, posx, posy) < enemy_sight_distance;
+    var enemy_player_distance = get_distance(lvl.enemies[i].position.x, lvl.enemies[i].position.y, posx, posy);
+    var is_at_distance = enemy_player_distance < enemy_sight_distance;
     var angle_joueur = get_angle(lvl.enemies[i].position.x, lvl.enemies[i].position.y, posx, posy);
     var is_at_angle = in_angle_intervalle(Number(lvl.enemies[i].rotation), angle_joueur, enemy_sight_angle);
     var is_there_no_obstacle = !is_there_obstacle(lvl.enemies[i].position.x, lvl.enemies[i].position.y, posx, posy);
@@ -2298,59 +2301,64 @@ function doLogic()
       }
       //On test si on a atteint la target, si oui on va à next_target, sinon on avance.
       //Note système bancal car on prend pas en compte les flèches !
-      if ( Math.abs(lvl.enemies[i].position.x - lvl.enemies[i].path_target.position.x) >= move_UpDown_unity_enemy_sa )
+      //s'il y a moins de min_enemy_player_distance entre l'enemi et le joueur
+      //alors on ne bouge pas pour éviter que les deux soient à la même position, ce qui rendrait le tir compliqué
+      //s'il n'est pas en chasse il continue son chemin sans l'avoir vu
+      if (((min_enemy_player_distance <= enemy_player_distance) && (lvl.enemies[i].status == "chasing")) || (lvl.enemies[i].status != "chasing"))
       {
-        //has_moved = true;
-        if (Math.abs(lvl.enemies[i].position.x < lvl.enemies[i].path_target.position.x))
+        if (Math.abs(lvl.enemies[i].position.x - lvl.enemies[i].path_target.position.x) >= move_UpDown_unity_enemy_sa) 
         {
-          //il ne faut pas traverser les murs !
-          var new_enemy_x = lvl.enemies[i].position.x + move_UpDown_unity_enemy_sa;
-          var new_enemy_x_wall_distance = new_enemy_x + max_enemy_wall_distance;
-          if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
+          //has_moved = true;
+          if (Math.abs(lvl.enemies[i].position.x < lvl.enemies[i].path_target.position.x)) 
           {
-            lvl.enemies[i].position.x = new_enemy_x;
-            rotation_mask += 1;
-            has_moved = true;
+            //il ne faut pas traverser les murs !
+            var new_enemy_x = lvl.enemies[i].position.x + move_UpDown_unity_enemy_sa;
+            var new_enemy_x_wall_distance = new_enemy_x + max_enemy_wall_distance;
+            if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
+            {
+              lvl.enemies[i].position.x = new_enemy_x;
+              rotation_mask += 1;
+              has_moved = true;
+            }
+          }
+          else
+          {
+            //il ne faut pas traverser les murs !
+            var new_enemy_x = lvl.enemies[i].position.x - move_UpDown_unity_enemy_sa;
+            var new_enemy_x_wall_distance = new_enemy_x - max_enemy_wall_distance;
+            if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
+            {
+              lvl.enemies[i].position.x = new_enemy_x;
+              rotation_mask += 2;
+              has_moved = true;
+            }
           }
         }
-        else
+        if (Math.abs(lvl.enemies[i].position.y - lvl.enemies[i].path_target.position.y) >= move_UpDown_unity_enemy_sa) 
         {
-          //il ne faut pas traverser les murs !
-          var new_enemy_x = lvl.enemies[i].position.x - move_UpDown_unity_enemy_sa;
-          var new_enemy_x_wall_distance = new_enemy_x - max_enemy_wall_distance;
-          if (lvl.walls[Math.floor(new_enemy_x_wall_distance)][Math.floor(lvl.enemies[i].position.y)] == 0) 
+          if (Math.abs(lvl.enemies[i].position.y < lvl.enemies[i].path_target.position.y)) 
           {
-            lvl.enemies[i].position.x = new_enemy_x;
-            rotation_mask += 2;
-            has_moved = true;
+            //il ne faut pas traverser les murs !
+            var new_enemy_y = lvl.enemies[i].position.y + move_UpDown_unity_enemy_sa;
+            var new_enemy_y_wall_distance = new_enemy_y + max_enemy_wall_distance;
+            if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0)
+            {
+              lvl.enemies[i].position.y = new_enemy_y;
+              rotation_mask += 4;
+              has_moved = true;
+            }
           }
-        }
-      }
-      if ( Math.abs(lvl.enemies[i].position.y - lvl.enemies[i].path_target.position.y) >= move_UpDown_unity_enemy_sa )
-      {
-      
-        if (Math.abs(lvl.enemies[i].position.y < lvl.enemies[i].path_target.position.y))
-        {
-          //il ne faut pas traverser les murs !
-          var new_enemy_y = lvl.enemies[i].position.y + move_UpDown_unity_enemy_sa;
-          var new_enemy_y_wall_distance = new_enemy_y + max_enemy_wall_distance;
-          if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0) 
+          else
           {
-            lvl.enemies[i].position.y = new_enemy_y;
-            rotation_mask += 4;
-            has_moved = true;
-          }
-        }
-        else
-        {
-          //il ne faut pas traverser les murs !
-          var new_enemy_y = lvl.enemies[i].position.y - move_UpDown_unity_enemy_sa;
-          var new_enemy_y_wall_distance = new_enemy_y - max_enemy_wall_distance;
-          if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0) 
-          {
-            lvl.enemies[i].position.y = new_enemy_y;
-            rotation_mask += 8;
-            has_moved = true;
+            //il ne faut pas traverser les murs !
+            var new_enemy_y = lvl.enemies[i].position.y - move_UpDown_unity_enemy_sa;
+            var new_enemy_y_wall_distance = new_enemy_y - max_enemy_wall_distance;
+            if (lvl.walls[Math.floor(lvl.enemies[i].position.x)][Math.floor(new_enemy_y_wall_distance)] == 0)
+            {
+              lvl.enemies[i].position.y = new_enemy_y;
+              rotation_mask += 8;
+              has_moved = true;
+            }
           }
         }
       }
@@ -2447,27 +2455,40 @@ function doLogic()
         }
         else
         {
-          //Il n'a pas bougé et est en chasse donc il a perdu de vu le joueur
-          //il va tourner sur lui-même pour le chercher !
-          if (lvl.enemies[i].time_last_image == undefined)
+          //soit il a perdu de vu le joueur, soit il est déjà à distance minimale de celui-ci et va donc tirer
+          if (min_enemy_player_distance >= enemy_player_distance)
           {
-            lvl.enemies[i].time_last_image = maintenant;
-          }
-          else 
-          {
-            if ( maintenant > lvl.enemies[i].time_last_image + animation_speed)
+            //il est suffisament proche depuis plus de time_fire_trigger en mode chasse il tire
+            if (maintenant > lvl.enemies[i].time_chase_started + time_fire_trigger && lvl.enemies[i].status != "firing")
             {
-              lvl.enemies[i].time_last_image = maintenant; // on le moment où il a perdu la trace du joueur
-              lvl.enemies[i].rotation += 0.785; // on tourne toujours dans le même sens pour se simplifier la vie
-              if (lvl.enemies[i].rotation > 6.28)
-                lvl.enemies[i].rotation = 0.01;
+              lvl.enemies[i].status = "firing";
+              lvl.enemies[i].animation_step = 0;
+              lvl.enemies[i].time_last_image = maintenant;
             }
           }
-          //Enfin in réinitialise le temps de chasse avant tir puisqu'il l'a perdu de vu !
-          lvl.enemies[i].time_chase_started = maintenant;
+          else
+          {
+            //Il n'a pas bougé et est en chasse donc il a perdu de vu le joueur
+            //il va tourner sur lui-même pour le chercher !
+            if (lvl.enemies[i].time_last_image == undefined)
+            {
+              lvl.enemies[i].time_last_image = maintenant;
+            }
+            else
+            {
+              if (maintenant > lvl.enemies[i].time_last_image + animation_speed)
+              {
+                lvl.enemies[i].time_last_image = maintenant; // on le moment où il a perdu la trace du joueur
+                lvl.enemies[i].rotation += 0.785; // on tourne toujours dans le même sens pour se simplifier la vie
+                if (lvl.enemies[i].rotation > 6.28)
+                  lvl.enemies[i].rotation = 0.01;
+              }
+            }
+            //Enfin on réinitialise le temps de chasse avant tir puisqu'il l'a perdu de vu !
+            lvl.enemies[i].time_chase_started = maintenant;
+          }
         }
       }
-            
     }
     else
     {
@@ -2507,7 +2528,8 @@ function doLogic()
             if (is_hit(i))
             {  
               life -=10;
-              playSound("player_hit");            }
+              playSound("player_hit");
+            }
           }
 
           if (lvl.enemies[i].animation_step !=0)
